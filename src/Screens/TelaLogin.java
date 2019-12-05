@@ -2,6 +2,7 @@ package Screens;
 
 import java.sql.*;
 import DAO.ModuloConexao;
+import java.awt.Color;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,9 +25,23 @@ public class TelaLogin extends javax.swing.JFrame {
             rs = pst.executeQuery();
             
             if (rs.next()){
-                TelaPrincipal principal = new TelaPrincipal();
-                principal.setVisible(true);
-                this.dispose();
+                String perfil=rs.getString(6);
+                String usuario=rs.getString(2);
+                if (perfil.equals("admin")){
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    principal.MenRelSer.setEnabled(true);
+                    principal.MenCadUsu.setEnabled(true);
+                    principal.lblUsuario.setText(usuario);
+                    principal.lblUsuario.setForeground(Color.RED);
+                    this.dispose();
+                }else{
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    principal.lblUsuario.setText(usuario);
+                    this.dispose();
+                }
+                
                 conexao.close();
             }else{
                 JOptionPane.showMessageDialog(null,"Usuário e/ou senha inválido!");
