@@ -118,6 +118,30 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         }
     }
     
+    //Método para remover um usuário
+    private void remover(){
+        String sql="delete from tbusuarios where iduser=?";
+        
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1,txtUsuId.getText());
+            
+            int confirmacao = JOptionPane.showConfirmDialog(null,"Tem certeza que deseja remover o usuário?","ATENÇÃO!!!",JOptionPane.YES_NO_OPTION);
+            if(confirmacao==JOptionPane.YES_OPTION){
+                pst.executeUpdate();
+                JOptionPane.showMessageDialog(null,"O usuário foi removido com sucesso!");
+                txtUsuId.setText(null);
+                txtUsuNome.setText(null);
+                txtUsuTelefone.setText(null);
+                txtUsuLogin.setText(null);
+                txtUsuSenha.setText(null);
+                cboUsuPerfil.setSelectedItem("Selecione");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,e);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -194,6 +218,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuDelete.setToolTipText("Deletar");
         btnUsuDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuDelete.setPreferredSize(new java.awt.Dimension(74, 74));
+        btnUsuDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuDeleteActionPerformed(evt);
+            }
+        });
 
         btnUsuCreate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/Create.png"))); // NOI18N
         btnUsuCreate.setToolTipText("Adicionar");
@@ -322,6 +351,10 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
     private void btnUsuUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuUpdateActionPerformed
         alterar();
     }//GEN-LAST:event_btnUsuUpdateActionPerformed
+
+    private void btnUsuDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuDeleteActionPerformed
+       remover();
+    }//GEN-LAST:event_btnUsuDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
