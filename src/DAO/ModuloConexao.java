@@ -22,7 +22,6 @@ public class ModuloConexao {
             conexao=DriverManager.getConnection(url, user, password);
             return conexao;
         }catch (Exception e){
-            System.out.println(e);
             return null;
         }
     }
