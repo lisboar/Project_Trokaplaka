@@ -24,7 +24,27 @@ public class TelaOs extends javax.swing.JInternalFrame {
     public TelaOs() {
         initComponents();
         conexao =ModuloConexao.conector();
+        this.preencher_tecnicos();
     }
+    
+    public void preencher_tecnicos(){        
+        String sql = "select * from tbusuarios";
+        
+        try {
+            pst = conexao.prepareStatement(sql);
+            rs=pst.executeQuery();
+            
+            while(rs.next()){
+                cboOsTec.addItem(rs.getString("usuario"));
+            }
+
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+        cboOsTec.setSelectedItem(null);
+    }
+    
     
     private void pesquisar_cliente(){
         String sql="Select idcli as Id, nome as Nome, telefone as Telefone from tbclientes where nome like ?";
@@ -41,12 +61,48 @@ public class TelaOs extends javax.swing.JInternalFrame {
         }
     }
     
+    
     private void preencher_campos(){
         int preencher = tblClientes.getSelectedRow();
-        txtCliId.setText(tblClientes.getModel().getValueAt(preencher, 0).toString());
+        txtCliId.setText(tblClientes.getModel().getValueAt(preencher, 0).toString()); 
+    }
+    
+    
+    private void cadastrar_os(){
+        String sql = "insert into tbos (equipamento,defeito,servico,tecnico,valor,idcli,situacao) values (?,?,?,?,?,?,?)";
         
+        try {
+            pst =conexao.prepareStatement(sql);
+            pst.setString(1, txtOsEquip.getText());
+            pst.setString(2, txtOsDef.getText());
+            pst.setString(3, txtOsServ.getText());
+            pst.setString(4, cboOsTec.getSelectedItem().toString());
+            pst.setString(5,txtOsValor.getText());
+            pst.setString(6,txtCliId.getText());
+            pst.setString(7,cboOsSit.getSelectedItem().toString());
+            
+            if (txtCliId.getText().isEmpty()||txtOsDef.getText().isEmpty()||txtOsEquip.getText().isEmpty()||txtOsValor.getText().isEmpty()||cboOsTec.getSelectedItem()==null||cboOsSit.getSelectedItem()=="Selecione"){
+                JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios!");
+            } else {
+                int adicionado = pst.executeUpdate();
+                if(adicionado>0){
+                JOptionPane.showMessageDialog(null,"Ordem de serviço cadastrada com sucesso!");
+                txtCliId.setText(null);
+                txtOsEquip.setText(null);
+                txtOsDef.setText(null);
+                txtOsServ.setText(null);
+                cboOsTec.setSelectedItem(null);
+                txtOsValor.setText(null);
+                }
+                
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -202,8 +258,6 @@ public class TelaOs extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        cboOsTec.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         btnOsAlterar.setText("Alterar");
         btnOsAlterar.setToolTipText("Atualizar");
         btnOsAlterar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -354,7 +408,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnOsExcluirActionPerformed
 
     private void btnOsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsAdicionarActionPerformed
-        //adicionar();
+        cadastrar_os();
     }//GEN-LAST:event_btnOsAdicionarActionPerformed
 
     private void txtCliPesquisarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCliPesquisarKeyReleased
@@ -373,7 +427,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnOsPesquisar;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cboOsSit;
-    private javax.swing.JComboBox<String> cboOsTec;
+    private javax.swing.JComboBox<Object> cboOsTec;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

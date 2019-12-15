@@ -41,6 +41,8 @@ values(4,'Ciclano','00000-0000','ciclano','123456');
 
 alter table tbusuarios add column perfil varchar(20) not null;
 
-select * from tbclientes;
+alter table tbclientes drop column situacao;
 
+select distinct "Administrador" usuarios from tbusuarios;
 
+describe tbos;
