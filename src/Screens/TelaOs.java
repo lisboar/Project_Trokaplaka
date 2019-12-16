@@ -129,6 +129,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
                 }
                 
                 btnOsAdicionar.setEnabled(false);
+                txtOsEquip.setEnabled(false);
             } else {
                 JOptionPane.showMessageDialog(null, "Ordem de serviço não cadastrada!");
             }
@@ -141,7 +142,43 @@ public class TelaOs extends javax.swing.JInternalFrame {
     }
     
     private void alterar_os(){
-        //String sql= "update tbos set, defeito=? ";
+        String sql= "update tbos set defeito=?,servico=?,tecnico=?,valor=?,situacao=? where os=? ";
+        
+        try {
+            pst =conexao.prepareStatement(sql);
+            //pst.setString(1, txtOsEquip.getText());
+            pst.setString(1, txtOsDef.getText());
+            pst.setString(2, txtOsServ.getText());
+            pst.setString(3, cboOsTec.getSelectedItem().toString());
+            pst.setString(4,txtOsValor.getText());
+            //pst.setString(6,txtCliId.getText());
+            pst.setString(5,cboOsSit.getSelectedItem().toString());
+            pst.setString(6, txtOs.getText());
+            
+            if (txtCliId.getText().isEmpty()||txtOsDef.getText().isEmpty()||txtOsEquip.getText().isEmpty()||txtOsValor.getText().isEmpty()||cboOsTec.getSelectedItem()==null||cboOsSit.getSelectedItem()=="Selecione"){
+                JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios!");
+            } else {
+                int adicionado = pst.executeUpdate();
+                if(adicionado>0){
+                JOptionPane.showMessageDialog(null,"Ordem de serviço alterada com sucesso!");
+                txtCliId.setText(null);
+                txtOsEquip.setText(null);
+                txtOsDef.setText(null);
+                txtOsServ.setText(null);
+                cboOsTec.setSelectedItem(null);
+                txtOsValor.setText(null);
+                txtOs.setText(null);
+                txtData.setText(null);
+                
+                btnOsAdicionar.setEnabled(true);
+                txtOsEquip.setEnabled(true);
+                
+                }
+            }
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
     
@@ -194,6 +231,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
         txtOs.setEditable(false);
 
         txtData.setEditable(false);
+        txtData.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -365,7 +403,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel4)
@@ -376,7 +414,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
                                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(5, 5, 5)
                                 .addComponent(txtOsEquip)))))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -439,7 +477,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnOsAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsAlterarActionPerformed
-        //alterar();
+        alterar_os();
     }//GEN-LAST:event_btnOsAlterarActionPerformed
 
     private void btnOsPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsPesquisarActionPerformed
