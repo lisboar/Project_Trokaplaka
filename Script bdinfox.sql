@@ -43,6 +43,8 @@ alter table tbusuarios add column perfil varchar(20) not null;
 
 alter table tbclientes drop column situacao;
 
-select distinct "Administrador" usuarios from tbusuarios;
+select * from tbos;
 
 describe tbos;
+
+select*from tbclientes;

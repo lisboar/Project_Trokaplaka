@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package Screens;
+
 import java.sql.*;
 import DAO.ModuloConexao;
 import net.proteanit.sql.DbUtils;
@@ -16,99 +17,95 @@ import javax.swing.JOptionPane;
  * @author Thainã
  */
 public class TelaOs extends javax.swing.JInternalFrame {
+
     Connection conexao = null;
     PreparedStatement pst = null;
     ResultSet rs = null;
 
-    
     public TelaOs() {
         initComponents();
-        conexao =ModuloConexao.conector();
+        conexao = ModuloConexao.conector();
         this.preencher_tecnicos();
     }
-    
-    public void preencher_tecnicos(){        
+
+    public void preencher_tecnicos() {
         String sql = "select * from tbusuarios where usuario <> \"Administrador\"";
-        
+
         try {
             pst = conexao.prepareStatement(sql);
-            rs=pst.executeQuery();
-            
-            while(rs.next()){
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
                 cboOsTec.addItem(rs.getString("usuario"));
-            }   
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
         cboOsTec.setSelectedItem(null);
     }
-    
-    
-    private void pesquisar_cliente(){
-        String sql="Select idcli as Id, nome as Nome, telefone as Telefone from tbclientes where nome like ?";
-        
+
+    private void pesquisar_cliente() {
+        String sql = "Select idcli as Id, nome as Nome, telefone as Telefone from tbclientes where nome like ?";
+
         try {
-            pst =conexao.prepareStatement(sql);
-            pst.setString(1,txtCliPesquisar.getText()+"%");
-            rs=pst.executeQuery();
-            
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtCliPesquisar.getText() + "%");
+            rs = pst.executeQuery();
+
             tblClientes.setModel(DbUtils.resultSetToTableModel(rs));
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-    
-    private void preencher_campos(){
+
+    private void preencher_campos() {
         int preencher = tblClientes.getSelectedRow();
-        txtCliId.setText(tblClientes.getModel().getValueAt(preencher, 0).toString()); 
+        txtCliId.setText(tblClientes.getModel().getValueAt(preencher, 0).toString());
     }
-    
-    
-    private void cadastrar_os(){
+
+    private void cadastrar_os() {
         String sql = "insert into tbos (equipamento,defeito,servico,tecnico,valor,idcli,situacao) values (?,?,?,?,?,?,?)";
-        
+
         try {
-            pst =conexao.prepareStatement(sql);
+            pst = conexao.prepareStatement(sql);
             pst.setString(1, txtOsEquip.getText());
             pst.setString(2, txtOsDef.getText());
             pst.setString(3, txtOsServ.getText());
             pst.setString(4, cboOsTec.getSelectedItem().toString());
-            pst.setString(5,txtOsValor.getText());
-            pst.setString(6,txtCliId.getText());
-            pst.setString(7,cboOsSit.getSelectedItem().toString());
-            
-            if (txtCliId.getText().isEmpty()||txtOsDef.getText().isEmpty()||txtOsEquip.getText().isEmpty()||txtOsValor.getText().isEmpty()||cboOsTec.getSelectedItem()==null||cboOsSit.getSelectedItem()=="Selecione"){
-                JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios!");
+            pst.setString(5, txtOsValor.getText());
+            pst.setString(6, txtCliId.getText());
+            pst.setString(7, cboOsSit.getSelectedItem().toString());
+
+            if (txtCliId.getText().isEmpty() || txtOsDef.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsValor.getText().isEmpty() || cboOsTec.getSelectedItem() == null || cboOsSit.getSelectedItem() == "Selecione") {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios!");
             } else {
                 int adicionado = pst.executeUpdate();
-                if(adicionado>0){
-                JOptionPane.showMessageDialog(null,"Ordem de serviço cadastrada com sucesso!");
-                txtCliId.setText(null);
-                txtOsEquip.setText(null);
-                txtOsDef.setText(null);
-                txtOsServ.setText(null);
-                cboOsTec.setSelectedItem(null);
-                txtOsValor.setText(null);
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Ordem de serviço cadastrada com sucesso!");
+                    txtCliId.setText(null);
+                    txtOsEquip.setText(null);
+                    txtOsDef.setText(null);
+                    txtOsServ.setText(null);
+                    cboOsTec.setSelectedItem(null);
+                    txtOsValor.setText(null);
                 }
             }
-            
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
-    
-    private void pesquisar_os(){
-        String num_os=JOptionPane.showInputDialog("Número da OS");
-        
-        String sql="select * from tbos where os= "+num_os;
-        
-        
+
+    private void pesquisar_os() {
+        String num_os = JOptionPane.showInputDialog("Número da OS");
+
+        String sql = "select * from tbos where os= " + num_os;
+
         try {
-            pst =conexao.prepareStatement(sql);
-            rs=pst.executeQuery();
-            
+            pst = conexao.prepareStatement(sql);
+            rs = pst.executeQuery();
+
             if (rs.next()) {
                 txtOs.setText(rs.getString(1));
                 txtData.setText(rs.getString(2));
@@ -119,70 +116,101 @@ public class TelaOs extends javax.swing.JInternalFrame {
                 txtOsValor.setText(rs.getString(7));
                 txtCliId.setText(rs.getString(8));
                 cboOsSit.setSelectedItem(rs.getString(9));
-                
-                String sql2="Select * from tbclientes where idcli =?";
-                pst =conexao.prepareStatement(sql2);
-                pst.setString(1,txtCliId.getText());
-                rs=pst.executeQuery();
-                while (rs.next()){
-                txtCliPesquisar.setText(rs.getString("nome"));
+
+                String sql2 = "Select * from tbclientes where idcli =?";
+                pst = conexao.prepareStatement(sql2);
+                pst.setString(1, txtCliId.getText());
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    txtCliPesquisar.setText(rs.getString("nome"));
                 }
-                
+
                 btnOsAdicionar.setEnabled(false);
                 txtOsEquip.setEnabled(false);
             } else {
                 JOptionPane.showMessageDialog(null, "Ordem de serviço não cadastrada!");
             }
-            
+
         } catch (com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException ee) {
-            JOptionPane.showMessageDialog(null,"OS inválida!");
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-    
-    private void alterar_os(){
-        String sql= "update tbos set defeito=?,servico=?,tecnico=?,valor=?,situacao=? where os=? ";
-        
-        try {
-            pst =conexao.prepareStatement(sql);
-            //pst.setString(1, txtOsEquip.getText());
-            pst.setString(1, txtOsDef.getText());
-            pst.setString(2, txtOsServ.getText());
-            pst.setString(3, cboOsTec.getSelectedItem().toString());
-            pst.setString(4,txtOsValor.getText());
-            //pst.setString(6,txtCliId.getText());
-            pst.setString(5,cboOsSit.getSelectedItem().toString());
-            pst.setString(6, txtOs.getText());
-            
-            if (txtCliId.getText().isEmpty()||txtOsDef.getText().isEmpty()||txtOsEquip.getText().isEmpty()||txtOsValor.getText().isEmpty()||cboOsTec.getSelectedItem()==null||cboOsSit.getSelectedItem()=="Selecione"){
-                JOptionPane.showMessageDialog(null,"Preencha todos os campos obrigatórios!");
-            } else {
-                int adicionado = pst.executeUpdate();
-                if(adicionado>0){
-                JOptionPane.showMessageDialog(null,"Ordem de serviço alterada com sucesso!");
-                txtCliId.setText(null);
-                txtOsEquip.setText(null);
-                txtOsDef.setText(null);
-                txtOsServ.setText(null);
-                cboOsTec.setSelectedItem(null);
-                txtOsValor.setText(null);
-                txtOs.setText(null);
-                txtData.setText(null);
-                
-                btnOsAdicionar.setEnabled(true);
-                txtOsEquip.setEnabled(true);
-                
-                }
-            }
-            
+            JOptionPane.showMessageDialog(null, "OS inválida!");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
     }
 
-    
-    
+    private void alterar_os() {
+        String sql = "update tbos set defeito=?,servico=?,tecnico=?,valor=?,situacao=? where os=? ";
+
+        try {
+            pst = conexao.prepareStatement(sql);
+            //pst.setString(1, txtOsEquip.getText());
+            pst.setString(1, txtOsDef.getText());
+            pst.setString(2, txtOsServ.getText());
+            pst.setString(3, cboOsTec.getSelectedItem().toString());
+            pst.setString(4, txtOsValor.getText());
+            //pst.setString(6,txtCliId.getText());
+            pst.setString(5, cboOsSit.getSelectedItem().toString());
+            pst.setString(6, txtOs.getText());
+
+            if (txtCliId.getText().isEmpty() || txtOsDef.getText().isEmpty() || txtOsEquip.getText().isEmpty() || txtOsValor.getText().isEmpty() || cboOsTec.getSelectedItem() == null || cboOsSit.getSelectedItem() == "Selecione") {
+                JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios!");
+            } else {
+                int adicionado = pst.executeUpdate();
+                if (adicionado > 0) {
+                    JOptionPane.showMessageDialog(null, "Ordem de serviço alterada com sucesso!");
+                    txtCliId.setText(null);
+                    txtOsEquip.setText(null);
+                    txtOsDef.setText(null);
+                    txtOsServ.setText(null);
+                    cboOsTec.setSelectedItem(null);
+                    txtOsValor.setText(null);
+                    txtOs.setText(null);
+                    txtData.setText(null);
+
+                    btnOsAdicionar.setEnabled(true);
+                    txtOsEquip.setEnabled(true);
+
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
+
+    private void excluir_os() {
+        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir esta OS?", "ATENÇÃO", JOptionPane.YES_NO_OPTION);
+
+        if (confirma == JOptionPane.YES_OPTION) {
+            String sql = "delete from tbos where os=?";
+
+            try {
+                pst = conexao.prepareStatement(sql);
+                pst.setString(1, txtOs.getText());
+
+                int apagado = pst.executeUpdate();
+                if (apagado > 0) {
+                    JOptionPane.showMessageDialog(null, "OS excluida com sucesso!");
+
+                    txtCliId.setText(null);
+                    txtOsEquip.setText(null);
+                    txtOsDef.setText(null);
+                    txtOsServ.setText(null);
+                    cboOsTec.setSelectedItem(null);
+                    txtOsValor.setText(null);
+                    txtOs.setText(null);
+                    txtData.setText(null);
+
+                    btnOsAdicionar.setEnabled(true);
+                    txtOsEquip.setEnabled(true);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -485,7 +513,7 @@ public class TelaOs extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnOsPesquisarActionPerformed
 
     private void btnOsExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsExcluirActionPerformed
-        //remover();
+        excluir_os();
     }//GEN-LAST:event_btnOsExcluirActionPerformed
 
     private void btnOsAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOsAdicionarActionPerformed
