@@ -33,8 +33,9 @@ idcli INT NOT NULL,
 FOREIGN KEY(idcli) REFERENCES tbclientes(idcli)
 );
 
-SELECT O.os, equipamento, defeito, servico, valor, C.nome, telefone FROM tbos AS O 
+SELECT O.os,data_os, C.nome, telefone, equipamento, defeito, situacao, valor FROM tbos AS O 
 INNER JOIN tbclientes AS C ON (O.idcli = C.idcli);
+
 
 insert into tbusuarios (iduser,usuario,telefone,login,senha)
 values(4,'Ciclano','00000-0000','ciclano','123456');
@@ -43,7 +44,7 @@ alter table tbusuarios add column perfil varchar(20) not null;
 
 alter table tbclientes drop column situacao;
 
-select * from tbos;
+select * from tbos where equipamento="Smartphone LG XPower" and defeito="Não presta";
 
 describe tbos;
 

@@ -109,6 +109,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         MenRelSer.setText("Serviços");
         MenRelSer.setEnabled(false);
+        MenRelSer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MenRelSerActionPerformed(evt);
+            }
+        });
         MenRel.add(MenRelSer);
 
         Menu.add(MenRel);
@@ -223,6 +228,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
         os.setVisible(true);
         Desktop.add(os);
     }//GEN-LAST:event_MenCadOsActionPerformed
+
+    private void MenRelSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenRelSerActionPerformed
+        TelaRelatorio rel = new TelaRelatorio();
+        rel.setVisible(true);
+        Desktop.add(rel);
+    }//GEN-LAST:event_MenRelSerActionPerformed
 
     /**
      * @param args the command line arguments
